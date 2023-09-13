@@ -7,6 +7,7 @@ import Box from './components/Box';
 import MoviesList from './components/MoviesList';
 import Summary from './components/Summary';
 import WatchedList from './components/WatchedList';
+import Loader from './components/Loader';
 
 const tempWatchedData = [
 	{
@@ -35,8 +36,9 @@ const query = 'Interstellar';
 const KEY = 'd3aa8c7c093e730dd5f18876de8fd3f3';
 const url = `https://api.themoviedb.org/3/search/movie?query=${query}&api_key=${KEY}`;
 
-async function fetchMovies(setMovies) {
+async function fetchMovies(setMovies, setIsLoading) {
 	try {
+		setIsLoading(true);
 		const response = await fetch(url);
 		const result = await response.json();
 		console.log('Before filter:', result.results);
@@ -45,6 +47,7 @@ async function fetchMovies(setMovies) {
 		);
 		console.log('After filter:', filtredResults);
 		setMovies(filtredResults);
+		setIsLoading(false);
 	} catch (error) {
 		console.error(error);
 	}
@@ -53,9 +56,10 @@ async function fetchMovies(setMovies) {
 export default function App() {
 	const [movies, setMovies] = useState([]);
 	const [watched, setWatched] = useState(tempWatchedData);
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(function () {
-		fetchMovies(setMovies);
+		fetchMovies(setMovies, setIsLoading);
 	}, []);
 	return (
 		<>
@@ -65,9 +69,7 @@ export default function App() {
 			</Navigation>
 
 			<Main>
-				<Box>
-					<MoviesList movies={movies} />
-				</Box>
+				<Box>{isLoading ? <Loader /> : <MoviesList movies={movies} />}</Box>
 
 				<Box>
 					<Summary watched={watched} />
