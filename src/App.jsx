@@ -33,15 +33,13 @@ const tempWatchedData = [
 	},
 ];
 
-const query = 'batman';
-const KEY = 'd3aa8c7c093e730dd5f18876de8fd3f3';
-const url = `https://api.themoviedb.org/3/search/movie?query=${query}&api_key=${KEY}`;
-
-async function fetchMovies(setMovies, setIsLoading, setError) {
+async function fetchMovies(setMovies, setIsLoading, setError, query) {
+	const KEY = 'd3aa8c7c093e730dd5f18876de8fd3f3';
+	const url = `https://api.themoviedb.org/3/search/movie?query=${query}&api_key=${KEY}`;
 	try {
 		setIsLoading(true);
+		setError('');
 		const response = await fetch(url);
-
 		if (!response.ok) {
 			throw new Error('Something went wrong with fetching movies');
 		}
@@ -52,11 +50,10 @@ async function fetchMovies(setMovies, setIsLoading, setError) {
 			throw new Error('Movie not found');
 		}
 
-		console.log('Before filter:', result.results);
 		const filtredResults = result.results.filter(
 			(movie) => movie.poster_path || (movie.backdrop_path && movie.release_date),
 		);
-		console.log('After filter:', filtredResults);
+
 		setMovies(filtredResults);
 	} catch (err) {
 		console.error(err);
@@ -69,16 +66,26 @@ async function fetchMovies(setMovies, setIsLoading, setError) {
 export default function App() {
 	const [movies, setMovies] = useState([]);
 	const [watched, setWatched] = useState(tempWatchedData);
+	const [query, setQuery] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState('');
 
-	useEffect(function () {
-		fetchMovies(setMovies, setIsLoading, setError);
-	}, []);
+	useEffect(
+		function () {
+			if (query.length < 3) {
+				setMovies([]);
+				setError('');
+				return;
+			}
+
+			fetchMovies(setMovies, setIsLoading, setError, query);
+		},
+		[query],
+	);
 	return (
 		<>
 			<Navigation>
-				<SearchInput />
+				<SearchInput query={query} setQuery={setQuery} />
 				<Results movies={movies} />
 			</Navigation>
 
