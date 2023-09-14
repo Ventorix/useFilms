@@ -58,8 +58,6 @@ async function fetchMovies(setMovies, setIsLoading, setError, query, controller)
 		setMovies(filtredResults);
 		setError('');
 	} catch (err) {
-		console.error(err);
-
 		if (err.name !== 'AbortError') {
 			setError(err.message);
 		}
@@ -92,7 +90,7 @@ export default function App() {
 				setError('');
 				return;
 			}
-
+			handleCloseMovie();
 			fetchMovies(setMovies, setIsLoading, setError, query, controller);
 
 			return function () {
