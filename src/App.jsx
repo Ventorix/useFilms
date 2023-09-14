@@ -70,7 +70,7 @@ export default function App() {
 	const [query, setQuery] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState('');
-	const [selectedId, setSelectedId] = useState(null);
+	const [selectedId, setSelectedId] = useState(13851);
 
 	function handleSelectMovie(id) {
 		setSelectedId((selectedId) => (id === selectedId ? null : id));

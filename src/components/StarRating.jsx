@@ -3,6 +3,7 @@ import { useState } from 'react';
 const containerStyle = {
 	display: 'flex',
 	alignItems: 'center',
+	gap: '10px',
 };
 
 const ratingStyle = {
