@@ -34,13 +34,13 @@ const tempWatchedData = [
 	},
 ];
 
-async function fetchMovies(setMovies, setIsLoading, setError, query) {
+async function fetchMovies(setMovies, setIsLoading, setError, query, controller) {
 	const KEY = 'd3aa8c7c093e730dd5f18876de8fd3f3';
 	const url = `https://api.themoviedb.org/3/search/movie?query=${query}&api_key=${KEY}`;
 	try {
 		setIsLoading(true);
 		setError('');
-		const response = await fetch(url);
+		const response = await fetch(url, { signal: controller.signal });
 		if (!response.ok) {
 			throw new Error('Something went wrong with fetching movies');
 		}
@@ -56,9 +56,13 @@ async function fetchMovies(setMovies, setIsLoading, setError, query) {
 		);
 
 		setMovies(filtredResults);
+		setError('');
 	} catch (err) {
 		console.error(err);
-		setError(err.message);
+
+		if (err.name !== 'AbortError') {
+			setError(err.message);
+		}
 	} finally {
 		setIsLoading(false);
 	}
@@ -82,13 +86,18 @@ export default function App() {
 
 	useEffect(
 		function () {
+			const controller = new AbortController();
 			if (query.length < 3) {
 				setMovies([]);
 				setError('');
 				return;
 			}
 
-			fetchMovies(setMovies, setIsLoading, setError, query);
+			fetchMovies(setMovies, setIsLoading, setError, query, controller);
+
+			return function () {
+				controller.abort();
+			};
 		},
 		[query],
 	);

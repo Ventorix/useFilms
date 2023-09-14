@@ -8,6 +8,7 @@ function MovieDetails({ selectedId, onCloseMovie }) {
 
 	const KEY = 'd3aa8c7c093e730dd5f18876de8fd3f3';
 	const url = `https://api.themoviedb.org/3/movie/${selectedId}?api_key=${KEY}`;
+
 	const genres = movieDetails.genres?.map((movie) => movie.name).join(', ');
 	const rating = (+movieDetails.vote_average).toFixed(1);
 
