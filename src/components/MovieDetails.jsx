@@ -3,15 +3,43 @@ import StarRating from './StarRating';
 import Loader from './Loader';
 import useKey from '../custom_hooks/useKey';
 
-function MovieDetails({ selectedId, onCloseMovie }) {
+function MovieDetails({ selectedId, onCloseMovie, onAddWatched }) {
 	const [movieDetails, setMovieDetails] = useState({});
 	const [isLoading, setIsLoading] = useState(false);
+	const [userRating, setUserRating] = useState(0);
 
 	const KEY = 'd3aa8c7c093e730dd5f18876de8fd3f3';
 	const url = `https://api.themoviedb.org/3/movie/${selectedId}?api_key=${KEY}`;
 
-	const genres = movieDetails.genres?.map((movie) => movie.name).join(', ');
-	const rating = (+movieDetails.vote_average).toFixed(1);
+	const {
+		id,
+		title,
+		release_date: date,
+		poster_path: poster,
+		backdrop_path: sparePoster,
+		vote_average: avgRating,
+		overview,
+		runtime,
+		genres,
+	} = movieDetails;
+
+	const genresStr = genres?.map((movie) => movie.name).join(', ');
+	const rating = (+avgRating).toFixed(1);
+
+	function handleAdd() {
+		const newWatchedMovie = {
+			id: selectedId,
+			title,
+			date,
+			poster,
+			sparePoster,
+			avgRating: Number(avgRating).toFixed(2),
+			userRating,
+			runtime: Number(runtime),
+		};
+		onAddWatched(newWatchedMovie);
+		onCloseMovie();
+	}
 
 	useKey('escape', onCloseMovie);
 
@@ -45,18 +73,23 @@ function MovieDetails({ selectedId, onCloseMovie }) {
 							&larr;
 						</button>
 						<img
-							src={`https://image.tmdb.org/t/p/w500/${
-								movieDetails.poster_path ? movieDetails.poster_path : movieDetails.backdrop_path
-							}`}
-							alt={`Poster of ${movieDetails.title} movie`}
+							src={`https://image.tmdb.org/t/p/w500/${poster ? poster : sparePoster}`}
+							alt={`Poster of ${title} movie`}
 						/>
 						<div className='details-overview'>
-							<h2>{movieDetails.title}</h2>
+							<h2>{title}</h2>
 							<p>
-								{movieDetails.release_date} &bull; {movieDetails.runtime}
+								{date} &bull; {runtime} min
 							</p>
-							<p>{genres}</p>
-							<p>
+							<p>{genresStr}</p>
+							<p
+								style={
+									rating > 7
+										? { color: 'green' }
+										: rating > 5
+										? { color: 'yellow' }
+										: { color: 'red' }
+								}>
 								<span>⭐</span>
 								{rating} IMDB rating
 							</p>
@@ -65,14 +98,16 @@ function MovieDetails({ selectedId, onCloseMovie }) {
 
 					<section>
 						<div className='rating'>
-							<StarRating size={24} />
+							<StarRating size={24} onSetRating={setUserRating} />
+							<button className='btn-add' onClick={handleAdd}>
+								Add to list
+							</button>
 						</div>
 
 						<p>
-							<em>{movieDetails.overview}</em>
+							<em>{overview}</em>
 						</p>
 					</section>
-					{selectedId}
 				</>
 			)}
 		</div>

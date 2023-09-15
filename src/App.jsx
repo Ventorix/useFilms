@@ -12,31 +12,8 @@ import ErrorMessage from './components/ErrorMessage';
 import MovieDetails from './components/MovieDetails';
 import useMovies from './custom_hooks/useMovies';
 
-const tempWatchedData = [
-	{
-		imdbID: 'tt1375666',
-		Title: 'Inception',
-		Year: '2010',
-		Poster:
-			'https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg',
-		runtime: 148,
-		imdbRating: 8.8,
-		userRating: 10,
-	},
-	{
-		imdbID: 'tt0088763',
-		Title: 'Back to the Future',
-		Year: '1985',
-		Poster:
-			'https://m.media-amazon.com/images/M/MV5BZmU0M2Y1OGUtZjIxNi00ZjBkLTg1MjgtOWIyNThiZWIwYjRiXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg',
-		runtime: 116,
-		imdbRating: 8.5,
-		userRating: 9,
-	},
-];
-
 export default function App() {
-	const [watched, setWatched] = useState(tempWatchedData);
+	const [watched, setWatched] = useState([]);
 	const [query, setQuery] = useState('');
 	const [selectedId, setSelectedId] = useState(13851);
 	const { movies, isLoading, error } = useMovies(query, handleCloseMovie);
@@ -47,6 +24,10 @@ export default function App() {
 
 	function handleCloseMovie() {
 		setSelectedId(null);
+	}
+
+	function handleAddWatched(movie) {
+		setWatched((watched) => [...watched, movie]);
 	}
 
 	return (
@@ -65,7 +46,11 @@ export default function App() {
 
 				<Box>
 					{selectedId ? (
-						<MovieDetails onCloseMovie={handleCloseMovie} selectedId={selectedId} />
+						<MovieDetails
+							onCloseMovie={handleCloseMovie}
+							onAddWatched={handleAddWatched}
+							selectedId={selectedId}
+						/>
 					) : (
 						<>
 							<Summary watched={watched} />

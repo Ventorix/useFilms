@@ -1,12 +1,15 @@
 function WatchedMovie({ movie }) {
 	return (
 		<li>
-			<img src={movie.Poster} alt={`${movie.Title} poster`} />
-			<h3>{movie.Title}</h3>
+			<img
+				src={`https://image.tmdb.org/t/p/w500/${movie.poster ? movie.poster : movie.sparePoster}`}
+				alt={`${movie.title} poster`}
+			/>
+			<h3>{movie.title}</h3>
 			<div>
 				<p>
 					<span>⭐️</span>
-					<span>{movie.imdbRating}</span>
+					<span>{movie.avgRating}</span>
 				</p>
 				<p>
 					<span>🌟</span>
