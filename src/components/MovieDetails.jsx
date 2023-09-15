@@ -3,10 +3,13 @@ import StarRating from './StarRating';
 import Loader from './Loader';
 import useKey from '../custom_hooks/useKey';
 
-function MovieDetails({ selectedId, onCloseMovie, onAddWatched }) {
+function MovieDetails({ watched, selectedId, onCloseMovie, onAddWatched }) {
 	const [movieDetails, setMovieDetails] = useState({});
 	const [isLoading, setIsLoading] = useState(false);
 	const [userRating, setUserRating] = useState(0);
+
+	const isWatched = watched.map((movie) => movie.id).includes(selectedId);
+	const watchedUserRating = watched.find((movie) => movie.id === selectedId)?.userRating;
 
 	const KEY = 'd3aa8c7c093e730dd5f18876de8fd3f3';
 	const url = `https://api.themoviedb.org/3/movie/${selectedId}?api_key=${KEY}`;
@@ -21,22 +24,27 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched }) {
 		overview,
 		runtime,
 		genres,
+		production_countries: countries,
 	} = movieDetails;
 
 	const genresStr = genres?.map((movie) => movie.name).join(', ');
 	const rating = (+avgRating).toFixed(1);
+	const year = new Date(date).getFullYear();
+	const country = countries?.[0]?.iso_3166_1;
 
 	function handleAdd() {
 		const newWatchedMovie = {
 			id: selectedId,
 			title,
-			date,
+			year,
 			poster,
 			sparePoster,
 			avgRating: Number(avgRating).toFixed(2),
 			userRating,
 			runtime: Number(runtime),
 		};
+
+		console.log('Suck');
 		onAddWatched(newWatchedMovie);
 		onCloseMovie();
 	}
@@ -79,9 +87,11 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched }) {
 						<div className='details-overview'>
 							<h2>{title}</h2>
 							<p>
-								{date} &bull; {runtime} min
+								{year} &bull; {runtime} min
 							</p>
-							<p>{genresStr}</p>
+							<p>
+								{country} &bull; {genresStr}
+							</p>
 							<p
 								style={
 									rating > 7
@@ -98,11 +108,21 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched }) {
 
 					<section>
 						<div className='rating'>
-							<StarRating size={24} onSetRating={setUserRating} />
-							{userRating > 0 && (
-								<button className='btn-add' onClick={handleAdd}>
-									Add to list
-								</button>
+							{!isWatched ? (
+								<>
+									<StarRating size={24} onSetRating={setUserRating} />
+									{userRating > 0 && (
+										<button className='btn-add' onClick={handleAdd}>
+											Add to list
+										</button>
+									)}
+								</>
+							) : (
+								<p>
+									You rated this movie by{' '}
+									<span style={{ color: 'gold', fontSize: '16px' }}>{watchedUserRating}</span>
+									<span>⭐</span>
+								</p>
 							)}
 						</div>
 
