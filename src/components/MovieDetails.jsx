@@ -8,14 +8,13 @@ function MovieDetails({ watched, selectedId, onCloseMovie, onAddWatched }) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [userRating, setUserRating] = useState(0);
 
-	const isWatched = watched.map((movie) => movie.id).includes(selectedId);
-	const watchedUserRating = watched.find((movie) => movie.id === selectedId)?.userRating;
+	const isWatched = watched.map((movie) => movie.tmdbID).includes(selectedId);
+	const watchedUserRating = watched.find((movie) => movie.tmdbID === selectedId)?.userRating;
 
 	const KEY = 'd3aa8c7c093e730dd5f18876de8fd3f3';
 	const url = `https://api.themoviedb.org/3/movie/${selectedId}?api_key=${KEY}`;
 
 	const {
-		id,
 		title,
 		release_date: date,
 		poster_path: poster,
@@ -34,7 +33,7 @@ function MovieDetails({ watched, selectedId, onCloseMovie, onAddWatched }) {
 
 	function handleAdd() {
 		const newWatchedMovie = {
-			id: selectedId,
+			tmdbID: selectedId,
 			title,
 			year,
 			poster,
@@ -43,8 +42,6 @@ function MovieDetails({ watched, selectedId, onCloseMovie, onAddWatched }) {
 			userRating,
 			runtime: Number(runtime),
 		};
-
-		console.log('Suck');
 		onAddWatched(newWatchedMovie);
 		onCloseMovie();
 	}

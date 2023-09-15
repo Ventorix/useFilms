@@ -30,6 +30,10 @@ export default function App() {
 		setWatched((watched) => [...watched, movie]);
 	}
 
+	function handleDeleteWatched(deleteID) {
+		setWatched((watched) => watched.filter((movie) => movie.tmdbID !== deleteID));
+	}
+
 	return (
 		<>
 			<Navigation>
@@ -55,7 +59,7 @@ export default function App() {
 					) : (
 						<>
 							<Summary watched={watched} />
-							<WatchedList watched={watched} />
+							<WatchedList onDeleteWatched={handleDeleteWatched} watched={watched} />
 						</>
 					)}
 				</Box>

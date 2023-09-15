@@ -1,4 +1,4 @@
-function WatchedMovie({ movie }) {
+function WatchedMovie({ movie, onDeleteWatched }) {
 	return (
 		<li>
 			<img
@@ -19,6 +19,9 @@ function WatchedMovie({ movie }) {
 					<span>⏳</span>
 					<span>{movie.runtime} min</span>
 				</p>
+				<button className='btn-delete' onClick={() => onDeleteWatched(movie.tmdbID)}>
+					❌
+				</button>
 			</div>
 		</li>
 	);
