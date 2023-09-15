@@ -10,6 +10,7 @@ import WatchedList from './components/WatchedList';
 import Loader from './components/Loader';
 import ErrorMessage from './components/ErrorMessage';
 import MovieDetails from './components/MovieDetails';
+import useMovies from './custom_hooks/useMovies';
 
 const tempWatchedData = [
 	{
@@ -34,45 +35,11 @@ const tempWatchedData = [
 	},
 ];
 
-async function fetchMovies(setMovies, setIsLoading, setError, query, controller) {
-	const KEY = 'd3aa8c7c093e730dd5f18876de8fd3f3';
-	const url = `https://api.themoviedb.org/3/search/movie?query=${query}&api_key=${KEY}`;
-	try {
-		setIsLoading(true);
-		setError('');
-		const response = await fetch(url, { signal: controller.signal });
-		if (!response.ok) {
-			throw new Error('Something went wrong with fetching movies');
-		}
-
-		const result = await response.json();
-
-		if (!result.total_results) {
-			throw new Error('Movie not found');
-		}
-
-		const filtredResults = result.results.filter(
-			(movie) => movie.poster_path || (movie.backdrop_path && movie.release_date),
-		);
-
-		setMovies(filtredResults);
-		setError('');
-	} catch (err) {
-		if (err.name !== 'AbortError') {
-			setError(err.message);
-		}
-	} finally {
-		setIsLoading(false);
-	}
-}
-
 export default function App() {
-	const [movies, setMovies] = useState([]);
 	const [watched, setWatched] = useState(tempWatchedData);
 	const [query, setQuery] = useState('');
-	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState('');
 	const [selectedId, setSelectedId] = useState(13851);
+	const { movies, isLoading, error } = useMovies(query, handleCloseMovie);
 
 	function handleSelectMovie(id) {
 		setSelectedId((selectedId) => (id === selectedId ? null : id));
@@ -82,23 +49,6 @@ export default function App() {
 		setSelectedId(null);
 	}
 
-	useEffect(
-		function () {
-			const controller = new AbortController();
-			if (query.length < 3) {
-				setMovies([]);
-				setError('');
-				return;
-			}
-			handleCloseMovie();
-			fetchMovies(setMovies, setIsLoading, setError, query, controller);
-
-			return function () {
-				controller.abort();
-			};
-		},
-		[query],
-	);
 	return (
 		<>
 			<Navigation>
