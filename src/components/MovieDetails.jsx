@@ -50,6 +50,16 @@ function MovieDetails({ watched, selectedId, onCloseMovie, onAddWatched }) {
 
 	useEffect(
 		function () {
+			if (!title) return;
+			document.title = `Movie | ${title}`;
+
+			return () => (document.title = 'useFilms');
+		},
+		[title],
+	);
+
+	useEffect(
+		function () {
 			async function getMovieDetails() {
 				try {
 					setIsLoading(true);

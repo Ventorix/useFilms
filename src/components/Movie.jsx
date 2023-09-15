@@ -1,5 +1,6 @@
 function Movie({ movie, onSelectMovie }) {
 	const year = new Date(movie.release_date).getFullYear();
+
 	return (
 		<li onClick={() => onSelectMovie(movie.id)}>
 			<img

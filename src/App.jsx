@@ -15,7 +15,7 @@ import useMovies from './custom_hooks/useMovies';
 export default function App() {
 	const [watched, setWatched] = useState([]);
 	const [query, setQuery] = useState('');
-	const [selectedId, setSelectedId] = useState(13851);
+	const [selectedId, setSelectedId] = useState(null);
 	const { movies, isLoading, error } = useMovies(query, handleCloseMovie);
 
 	function handleSelectMovie(id) {
