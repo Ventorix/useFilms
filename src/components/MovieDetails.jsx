@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import StarRating from './StarRating';
 import Loader from './Loader';
+import useKey from '../custom_hooks/useKey';
 
 function MovieDetails({ selectedId, onCloseMovie }) {
 	const [movieDetails, setMovieDetails] = useState({});
@@ -12,21 +13,7 @@ function MovieDetails({ selectedId, onCloseMovie }) {
 	const genres = movieDetails.genres?.map((movie) => movie.name).join(', ');
 	const rating = (+movieDetails.vote_average).toFixed(1);
 
-	useEffect(
-		function () {
-			function callback(e) {
-				if (e.code === 'Escape') {
-					onCloseMovie();
-				}
-			}
-			document.addEventListener('keydown', callback);
-
-			return function () {
-				document.removeEventListener('keydown', callback);
-			};
-		},
-		[onCloseMovie],
-	);
+	useKey('escape', onCloseMovie);
 
 	useEffect(
 		function () {
