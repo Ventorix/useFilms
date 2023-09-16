@@ -91,6 +91,7 @@ function MovieDetails({ watched, selectedId, onCloseMovie, onAddWatched }) {
 							src={`https://image.tmdb.org/t/p/w500/${poster ? poster : sparePoster}`}
 							alt={`Poster of ${title} movie`}
 						/>
+
 						<div className='details-overview'>
 							<h2>{title}</h2>
 							<p>

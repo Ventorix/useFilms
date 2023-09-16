@@ -49,7 +49,8 @@ export default function App() {
 				</Box>
 
 				<Box>
-					{selectedId ? (
+					{isLoading && <Loader />}
+					{!isLoading && selectedId ? (
 						<MovieDetails
 							onCloseMovie={handleCloseMovie}
 							onAddWatched={handleAddWatched}

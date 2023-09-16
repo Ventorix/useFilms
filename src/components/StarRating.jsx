@@ -69,6 +69,7 @@ function Star({ onRate, onHoverIn, onHoverOut, full, color, size, title }) {
 
 	return (
 		<span
+			className='star'
 			title={title}
 			style={starStyle}
 			role='button'
