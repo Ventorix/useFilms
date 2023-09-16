@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Navigation from './components/Navigation';
 import Main from './components/Main';
 import Results from './components/Results';
@@ -11,9 +11,10 @@ import Loader from './components/Loader';
 import ErrorMessage from './components/ErrorMessage';
 import MovieDetails from './components/MovieDetails';
 import useMovies from './custom_hooks/useMovies';
+import useLocalStorageState from './custom_hooks/useLocalStorageState';
 
 export default function App() {
-	const [watched, setWatched] = useState([]);
+	const [watched, setWatched] = useLocalStorageState([], 'watched');
 	const [query, setQuery] = useState('');
 	const [selectedId, setSelectedId] = useState(null);
 	const { movies, isLoading, error } = useMovies(query, handleCloseMovie);
